@@ -24,13 +24,24 @@ class Exchange extends Component {
         })
         this.calculate.bind(this)
     }
-    calculate = () => {
+
+    
+
+     calculate = () => {
         const amount = this.state.amount;
         if(amount === isNaN){
             return;
         }else {
-            fetch(`https://api.exchangerate.host/latest?${this.state.base}`)
-            .then(res => res.json())
+            let myHeaders = new Headers();
+            myHeaders.append("apikey", "X2CKLzzwGkZrRM57JWPgtTqHIE9fwGf4");
+
+            let requestOptions = {
+             method: 'GET',
+             redirect: 'follow',
+            headers: myHeaders
+            };
+            fetch( fetch("https://api.apilayer.com/fixer/convert?to={to}&base={base}&amount={amount}", requestOptions))
+            .then(res => res.text())
             .then(data => {
                 const date = data;
                 const result = (date.rates[this.state.to] * amount).toFixed(3);
@@ -69,19 +80,19 @@ render() {
                     <form className="form-inline mb-4">
                         <input type="number" value={ amount } onChange={ this.handleInput } className="form-control form-control-lg mx-3"/>
                         <select name="base" value={ base } onChange={ this.handleSelect } className="form-control form-control-lg">
-                            {symbols.map(symbol => <option 
+                            {symbols.map(symbol => (<option 
                             key={symbol}
                             value={symbol}
-                            >{symbol}</option>)}
+                            >{ symbol }</option>))}
                         </select>
                     </form>
                     <form className="form-inline mb-4">
-                        <input disable={ true } value={ result === null ? "Calculating..." : result } className="form-control form-control-lg mx-3"/>
+                        <input disable="true" value={ result === null ? "Calculating..." : result } className="form-control form-control-lg mx-3"/>
                         <select name="to" value={ to } onChange={ this.handleSelect } className="form-control form-control-lg">
-                            {symbols.map(symbol => <option 
+                            {symbols.map(symbol => (<option 
                             key={symbol}
                             value={symbol}
-                            >{symbol}</option>)}
+                            >{symbol}</option>))}
                         </select>
                     </form>
                 </div>
@@ -103,3 +114,6 @@ render() {
 
 }
 export default Exchange;
+
+
+//X2CKLzzwGkZrRM57JWPgtTqHIE9fwGf4
